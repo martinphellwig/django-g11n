@@ -1,0 +1,6 @@
+IP Info
+=======
+
+Instead of supplying a database, this program contacts sources like regional
+NICs and downloads data from them. You can choose to either compile it as a
+CSV or use some internal tools.
