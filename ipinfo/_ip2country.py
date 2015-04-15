@@ -188,7 +188,7 @@ class CompactRanges(object):
            older[4] == network - 1: 
             # The older broadcast is the same as newer network - 1, thus is is a
             # continuation, so extending the range of the older one.
-            self.ranges[-1][3] = broadcast
+            self.ranges[-1][4] = broadcast
         else:
             self.ranges.append(newer)                
 
@@ -248,7 +248,41 @@ def get_data():
         print('#' * 79)
     print('# A total of %s IP ranges have been defined.' % len(tmp))
     
-    return tmp
+    for row in tmp:
+        nic, country, ipv, network, broadcast = row
+        rid = nic[:2]+country+str(ipv)+hex(broadcast)[2::]+hex(network)[2::]
+        rid = rid.lower()
+        rid = _compact_string(rid)
+        yield rid, nic, country, ipv, network, broadcast
+        
+
+def _compact_string(text):
+    "try making text compacter"
+    # we go through the text and try to replace repeated characters with:
+    # _c_n_  where c is the character and n is the amount of if. The underscore
+    # in this context is guaranteed to not occur in text. As such we can use
+    # it as an escape character.
+    # Also we do not collapse if repeated character is below 5.
+    tmp = list()
+    last = ''
+    count = 0
+    for character in text+'_': 
+        # Add the underscore so we make sure not to miss the last bit of the
+        # string if it happens to end on more then 4 identical characters.
+        count += 1
+        if character != last:
+            if count > 4:
+                tmp = tmp[:len(tmp)-count]
+                tmp.append('_%s_%s_' % (last, count))
+                
+            count = 0
+        
+        last = character
+        tmp.append(character)
+        
+    # Remove the appended underscore before returning.
+    return ''.join(tmp)[:-1]           
+    
 
 def write_csv(file_name = None):
     "Create a CSV from the data"
@@ -260,7 +294,7 @@ def write_csv(file_name = None):
         name = "ip_country_range_" + stamp + '.csv'
         file_name = os.path.join(TWD, name)
     
-    header = ['nic', 'country_code', 'ip_version', 'network', 'broadcast']
+    header = ['rid', 'nic', 'tldcc', 'ip_version', 'network', 'broadcast']
     data = get_data()
     with open(file_name, 'w') as file_open:
         writer = csv.writer(file_open)
@@ -268,3 +302,7 @@ def write_csv(file_name = None):
         writer.writerows(data)
     
     print('# Written a csv to: %s' % file_name)
+    return file_name
+    
+if __name__ == '__main__':
+    write_csv()
