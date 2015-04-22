@@ -114,13 +114,5 @@ class Database(object):
 
     def return_tldcc(self, address):
         "Just return the country code"
-        # it is actually TLDcc which can also include regions like EU
+        # It is actually TLDcc which can also include regions like EU
         return self.get_record(address)[0][2]
-
-if __name__ == '__main__':
-    database = Database('/tmp/ip_country_range_2015_04_16T11_42_35_001479.csv')
-    print(database.return_tldcc('221.192.143.171'))
-    
-
-        
-        
