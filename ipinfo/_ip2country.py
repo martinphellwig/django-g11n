@@ -179,6 +179,7 @@ class CompactRanges(object):
     def add(self, *newer):
         "Add a line to the ranges, compacting where possible."
         # nic, tld, ipv, network, broadcast = *newer
+        newer = list(newer)
 
         if len(self.ranges) == 0:
             self.ranges.append(newer)
