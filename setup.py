@@ -18,5 +18,9 @@ setup(
   keywords = ['django'],
   license = 'BSD',
   classifiers = ['Programming Language :: Python :: 3',],
+  install_requires = ['Django>=1.9.6',
+                      'django-countries>=3.4.1',
+                      'django-ipware>=1.1.5',
+                      'django-integrator>=0.1.0',
+                      'requests>=2.10.0'],
 )
-
