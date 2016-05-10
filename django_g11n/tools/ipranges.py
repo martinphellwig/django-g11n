@@ -9,8 +9,6 @@ import socket
 import ipaddress
 from binascii import hexlify
 import tempfile
-import csv
-import datetime
 
 TWD = tempfile.gettempdir()
 
@@ -84,7 +82,7 @@ def download(url):
     ftp.cwd(file_path)
 
     details = _file_details(ftp, file_name)
-    if details == None:
+    if details is None:
         print('# No updated files found !')
         return
 
@@ -222,7 +220,7 @@ def _local_file_from_url(url):
 def parse_latest(url):
     "Parse a file as it has been retrieved from the url."
     file_name = _local_file_from_url(url)
-    if file_name == None:
+    if file_name is None:
         print('# No files available to parse !')
         return
 
@@ -235,11 +233,10 @@ def parse_latest(url):
         for row in file_open:
             count_linesall += 1
             parsed = _parse_row(row)
-            if parsed == None:
+            if parsed is None:
                 continue
 
             count_relevant += 1
-            # pylint: disable=star-args
             compacted.add(*parsed)
 
     print('# Parsed %s lines' % count_linesall)
@@ -274,7 +271,7 @@ def _compact_string(text):
     # Remove the appended underscore before returning.
     return ''.join(tmp)[:-1]
 
-def get_data():
+def get():
     "Fetch and parse data"
     print('#'*79)
     print('# Fetching data from regional NICs.')
@@ -287,29 +284,10 @@ def get_data():
         print('#' * 79)
     print('# A total of %s IP ranges have been defined.' % len(tmp))
 
-    for row in tmp:
-        nic, country, ipv, network, broadcast = row
-        rid = nic[:2]+country+str(ipv)+hex(broadcast)[2::]+hex(network)[2::]
+    for nic, country, ipv, network, broadcast in tmp:
+        hex_network = hex(network)[2::].zfill(32)
+        hex_broadcast = hex(broadcast)[2::].zfill(32)
+        rid = nic[:2]+country+str(ipv)+hex_broadcast+hex_network
         rid = rid.lower()
         rid = _compact_string(rid)
-        yield rid, nic, country, ipv, network, broadcast
-
-def write_csv(file_name = None):
-    "Create a CSV from the data"
-    stamp = datetime.datetime.now().isoformat()
-    for character in '-:.':
-        stamp = stamp.replace(character, '_')
-
-    if file_name == None:
-        name = "ip_country_range_" + stamp + '.csv'
-        file_name = os.path.join(TWD, name)
-
-    header = ['rid', 'nic', 'tldcc', 'ip_version', 'network', 'broadcast']
-    data = get_data()
-    with open(file_name, 'w') as file_open:
-        writer = csv.writer(file_open)
-        writer.writerow(header)
-        writer.writerows(data)
-
-    print('# Written a csv to: %s' % file_name)
-    return file_name
+        yield rid, nic, country, ipv, hex_network, hex_broadcast
