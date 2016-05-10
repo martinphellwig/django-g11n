@@ -7,4 +7,3 @@ LABELS = dict()
 LABELS['class'] = 'G11N'
 LABELS['name'] = 'django_g11n'
 LABELS['verbose_name'] = 'Globalisation'
-VERSION = '0.1.1'

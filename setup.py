@@ -3,7 +3,7 @@ PyPi Setup file.
 """
 # pylint: disable=no-name-in-module, import-error
 from distutils.core import setup
-from django_g11n.__info__ import VERSION
+VERSION = '0.1.2'
 BASE_URL = "https://bitbucket.org/hellwig/django-g11n"
 
 setup(
