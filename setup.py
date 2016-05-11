@@ -2,13 +2,13 @@
 PyPi Setup file.
 """
 # pylint: disable=no-name-in-module, import-error
-from distutils.core import setup
-VERSION = '0.1.2'
+from setuptools import setup, find_packages
+VERSION = '0.1.3'
 BASE_URL = "https://bitbucket.org/hellwig/django-g11n"
 
 setup(
   name = 'Django-G11N',
-  packages = ['django_g11n'],
+  packages = find_packages(),
   version = VERSION,
   description = 'Django Globalisation Tools',
   author = 'Martin P. Hellwig',
