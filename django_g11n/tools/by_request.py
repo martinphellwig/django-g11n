@@ -6,14 +6,30 @@ the hosting provider that influences the result.
 So data from here should be treated as a default that the user can override
 where necessary.
 """
+import os
 from functools import lru_cache
 import ipware.ip
 from . import fetch
 
 @lru_cache(maxsize=8)
-def ipaddress(request):
-    "Return an IP Address from the request."
-    return {'ip':ipware.ip.get_ip(request)}
+def ipaddress(request=None):
+    """Return an IP Address from the request,
+    or G11N_IP_OVERRIDE environment variable if that is set."""
+    override = None
+    key = 'G11N_IP_OVERRIDE'
+    if key in os.environ:
+        override = os.environ[key]
+
+    if override is None and request is None:
+        text = "Environment variable %s must be set to an appropriate IP."
+        raise ValueError(text)
+
+    if request is None:
+        value = override
+    else:
+        value = ipware.ip.get_ip(request)
+
+    return {'ip':value}
 
 def guess_country(request):
     "Guess the country from the request (using the IP address)."
@@ -31,7 +47,7 @@ def guess_currency(request):
 
 def guess_country_language_currency(request):
     "Guess all of these in a single function."
-    functions = [guess_country, guess_language, guess_currency]
+    functions = [guess_country, guess_language, guess_currency, ipaddress]
     tmp = dict()
     for function in functions:
         for key, value in function(request).items():

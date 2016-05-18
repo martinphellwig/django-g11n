@@ -6,11 +6,13 @@ from . import (update_countries, update_currencies, update_ipranges,
 # pylint: disable=no-member
 
 class Command(BaseCommand):
-    """Initial inserting of data."""
-    help = "Insert data."
+    """Initial setup of the data."""
+    help = "Insert initial data for setup purpose"
 
     # pylint: disable=unused-argument
     def handle(self, *args, **kwargs):
+        # For first setup, we need to call the updates in a specific order.
+        # Later updates can be done in any order.
         update_countries.update()
         update_currencies.update()
         update_ipranges.update()
