@@ -1,9 +1,7 @@
 #! /usr/bin/env python
-'''
-Created on 20 Apr 2016
-
-@author: martin
-'''
+"""
+Developer Reset.
+"""
 import os
 APP = 'django_g11n'
 DIR = os.path.dirname(os.path.abspath(__file__))
@@ -23,6 +21,8 @@ def get_last_migration_file():
 def modify_migration():
     "Modify migration, add pylint disable line."
     path = get_last_migration_file()
+    if path is None:
+        return
     text = '# pylint: disable=invalid-name, missing-docstring, line-too-long\n'
     with open(path, 'r+') as file_open:
         data = file_open.readlines()
@@ -76,7 +76,7 @@ def main():
     #
     # This will run a shell which imports this file as a module, this means
     # we can execute things in a Django environment.
-    execute_shell('shell', pipe='echo "import reset"')
+    execute_shell('shell', pipe='echo "import devset"')
     #
     execute_shell('runserver')
 
