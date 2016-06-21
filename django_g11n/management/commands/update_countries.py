@@ -3,8 +3,7 @@ Command update country.
 """
 
 from django.core.management.base import BaseCommand
-from ...tools import models
-from django_g11n.tools import country
+from ...tools import models, country
 # pylint: disable=no-member
 
 
