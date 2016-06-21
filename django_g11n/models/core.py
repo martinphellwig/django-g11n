@@ -45,6 +45,10 @@ class LanguageCountrySpecifier(Abstract):
     value = models.CharField(max_length=64)
     override = models.BooleanField(default=True)
 
+    class Meta:
+        "Set verbose name"
+        verbose_name_plural = 'Language Country Specifiers'
+
     def __str__(self):
         return self.value
 
@@ -57,6 +61,10 @@ class LanguageCountry(Abstract):
                                   null=True, blank=True)
     default = models.BooleanField(default=False)
     override = models.BooleanField(default=True)
+
+    class Meta:
+        "Set verbose name"
+        verbose_name_plural = 'Language Countries'
 
     def __str__(self):
         if len(self.language.code_a2) == 2:
