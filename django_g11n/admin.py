@@ -1,8 +1,7 @@
 """
-We just simply add all models in the admin interface.
+Default admin interface setup.
 """
 from django.contrib import admin
-from django.contrib.admin.sites import AlreadyRegistered
 from .tools import models
 
 # First define custom admin on required models.
@@ -11,10 +10,5 @@ from .tools import models
 for key in models.ALL:
     subject = models.ALL[key]
 
-    try:
+    if not admin.site.is_registered(subject):
         admin.site.register(subject)
-    except AlreadyRegistered:
-        pass
-
-
-
