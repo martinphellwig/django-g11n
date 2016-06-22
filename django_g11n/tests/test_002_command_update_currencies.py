@@ -41,7 +41,6 @@ class UpdateCurrenciesTestCase(TestCase):
         self._call_command('update_currencies')
         # Calling twice, as the second time it should exclude it.
         self._call_command('update_currencies')
-        
 
 
 
