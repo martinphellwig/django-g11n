@@ -1,26 +1,5 @@
 "main testing module"
-import os
 from django.test import TestCase
-
-# pylint: disable=too-few-public-methods
-class MockLibRequests(object):
-    "Mock the language module"
-    def __init__(self):
-        _ = os.path.dirname(os.path.abspath(__file__))
-        self.data = os.path.join(_, 'data', 'ISO-639-2_utf-8.txt')
-        self.url = None
-        self.text = None
-        self.partial = False
-
-    def get(self, url):
-        "GET request."
-        self.url = url
-        with open(self.data, 'r') as file_open:
-            _ = file_open.readlines()
-            self.text = ''.join(_)
-
-        return self
-
 
 # Create your tests here.
 class UpdateLanguagesTestCase(TestCase):
@@ -32,19 +11,24 @@ class UpdateLanguagesTestCase(TestCase):
         return returns
 
     def setUp(self):
-        TestCase.setUp(self)
+        returns = TestCase.setUp(self)
         from django.core.management import call_command
         self.call_command = call_command
 
-        from ..management.commands import update_languages
-        self.update = update_languages
-        self.restore = update_languages.language.requests
+        from . import common
+        self.mock = common.RequestsMock()
+        url = 'http://www.loc.gov/standards/iso639-2/ISO-639-2_utf-8.txt'
+        file_name = 'ISO-639-2_utf-8.txt'
 
-        self.update.language.requests = MockLibRequests()
+        self.mock.add_response_text_from_data(url, file_name)
+        self.mock.insert_mock()
+
+        return returns
 
     def tearDown(self):
         TestCase.tearDown(self)
-        self.update.language.requests = self.restore
+        self.mock.remove_mock()
+
 
     def test_001_update_language(self):
         self.call_command('update_languages')
@@ -54,7 +38,6 @@ class UpdateLanguagesTestCase(TestCase):
         from ..tools import models
         models.ALL['Language'].objects.create(
             code_a2='**', english='Double Star', french='Astérisque Double')
-        self.update.language.requests.partial = True
         self.call_command('update_languages')
 
     def test_002_update_language_country(self):
