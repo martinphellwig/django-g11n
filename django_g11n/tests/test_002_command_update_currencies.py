@@ -1,17 +1,6 @@
 "main testing module"
 from django.test import TestCase
 
-class MockToolsCurrency(object):
-    "Mock the currency module"
-    def __init__(self):
-        self._data = [
-            ['AFGHANISTAN', '971', 'Afghani', 'AFN', '2', False, True, True],
-            ['IMAGINARY', '999', 'Ima Dollar', 'IMG', '2', False, True, True]]
-
-    def get(self):
-        "Mock the get function"
-        return self._data
-
 # Create your tests here.
 class UpdateCurrenciesTestCase(TestCase):
     "main test case"
@@ -22,20 +11,25 @@ class UpdateCurrenciesTestCase(TestCase):
         return returns
 
     def setUp(self):
-        TestCase.setUp(self)
+        returns = TestCase.setUp(self)
         from django.core.management import call_command
         self._call_command = call_command
         self._call_command('update_countries')
 
-        from ..management.commands import update_currencies
-        self._update_currencies = update_currencies
-        self._restore = update_currencies.currency
+        from . import common
 
-        update_currencies.currency = MockToolsCurrency()
+        self.mock = common.RequestsMock()
+        url = "http://www.currency-iso.org/dam/downloads/lists/list_one.xml"
+        file_name = 'list_one.xml'
+
+        self.mock.add_response_text_from_data(url, file_name)
+        self.mock.insert_mock()
+
+        return returns
 
     def tearDown(self):
         TestCase.tearDown(self)
-        self._update_currencies.currency = self._restore
+        self.mock.remove_mock()
 
     def test_001_insert(self):
         self._call_command('update_currencies')
