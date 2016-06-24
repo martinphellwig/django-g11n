@@ -12,19 +12,29 @@ class GuessTldByIpTestCase(TestCase):
 
     def setUp(self):
         from . import common
+        from ..tools import models
         TestCase.setUp(self)
         from django.core.management import call_command
         self.call = common.call_command_returns
-        #
-        common.setup_ipranges()
+        print('# Setting up IP ranges, this will take a while.')
+        common.setup_ipranges_all()
+        print('# ... done.')
+        common.setup_currencies()
 
     def tearDown(self):
         TestCase.tearDown(self)
 
-    def test_001_insert(self):
-        expected = 'XX'
-        actually = self.call('guess_tld_by_ip', '192.168.0.1')
+    def test_001_guess(self):
+        expected = 'GB'
+        actually = self.call('guess_tld_by_ip',  '109.74.193.121')
         self.assertEqual(expected, actually)
+
+        provided = 'GB'
+        expected = 'GBP'
+        actually = self.call('currency_by_tld', provided)
+        self.assertEqual(expected, actually)
+
+
 
 
 if __name__ == '__main__': # pragma: no cover

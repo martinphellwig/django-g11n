@@ -18,8 +18,5 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         tld = kwargs[_ARGUMENT_TLD]
         fetched = fetch.currency_by_country_tld(tld)
-        if all(item is None for item in fetched):
-            return None
-
-        fetched = [str(item) for item in fetched]
-        return ':'.join(fetched)
+        if fetched != None:
+            return str(fetched)
