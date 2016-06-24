@@ -5,37 +5,15 @@ Created on 23 Jun 2016
 '''
 import json
 import zipfile
-import ipaddress
 import os
 from io import StringIO
 import requests
-
-
-
-def ip_to_hex(ip_address):
-    "Convert IP to hex."
-    address = ipaddress.ip_address(ip_address)
-    hex_address = hex(int(address))[2::].zfill(32)
-    return hex_address
-
 
 def make_data_path(name):
     "Make the data path."
     _ = os.path.dirname(os.path.abspath(__file__))
     _ = os.path.join(_, 'data', name)
     return _
-
-
-def setup_ipranges():
-    "Setup some ip ranges"
-    from ..tools import models
-
-    from_ip = ip_to_hex("1.0.0.0")
-    till_ip = ip_to_hex("239.255.255.255")
-    model = models.ALL['IPRange']
-    model.objects.create(
-        identifier='all', regional_nic='XX', tld='XX', ipv=4,
-        network_hex=from_ip, broadcast_hex=till_ip)
 
 
 def bulk_json_insert(data):
