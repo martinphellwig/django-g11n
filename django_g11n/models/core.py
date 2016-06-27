@@ -97,10 +97,11 @@ class LanguageCountry(Abstract):
         verbose_name_plural = 'Language Countries'
 
     def __str__(self):
-        if len(self.language.code_a2) == 2:
-            _ = [self.language.code_a2]
+        if self.language.code_a2 is None:
+            _ = [str(self.language.bibliographic)]
         else:
-            _ = [self.language.bibliographic]
+            _ = [str(self.language.code_a2)]
+
         _.append(self.country.code_2)
 
         tmp = '-'.join(_)

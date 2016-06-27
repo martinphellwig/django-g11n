@@ -9,6 +9,11 @@ import os
 from io import StringIO
 import requests
 
+_STATE = {'mlsd':False}
+# pylint: disable=missing-docstring, no-self-use, unused-argument
+# pylint: disable=protected-access, too-few-public-methods
+
+
 def make_data_path(name):
     "Make the data path."
     _ = os.path.dirname(os.path.abspath(__file__))
@@ -29,7 +34,6 @@ def bulk_json_insert(data):
         fields['id'] = item['pk']
 
         for key in list(fields):
-            # pylint: disable=protected-access
             field = model._meta.get_field(key)
             if field.is_relation:
                 fields[key+'_id'] = fields.pop(key)
@@ -56,7 +60,7 @@ def setup_ipranges_all():
     unzip = zipfile.ZipFile(path)
     data = unzip.read(name.rsplit('.', 1)[0]).decode('UTF-8')
     bulk_json_insert(data)
-    
+
 
 def call_command_returns(*args, **kwargs):
     "call command but wich returns the output."
@@ -109,8 +113,6 @@ def setup_currencies():
     call_command('update_currencies')
 
 
-_STATE = {'mlsd':False}
-
 class MockFTP():
     def __init__(self, host):
         self._host = host
@@ -144,9 +146,9 @@ class MockFTP():
     def retrbinary(self, retr, callback):
         ip4 = 'arin|US|ipv4|12.0.0.0|16777216|19830823|allocated|99e9610432f009e0e177ba0c274bb288\n'
         ip6 = 'arin|US|ipv6|2001:418::|32|20000524|allocated|9f14454567a6c23e60bfd4fec24d1438\n'
-        nc = 'arin||ipv4|13.0.0.0|16777216|19830823|allocated|99e9610432f009e0e177ba0c274bb288\n'
+        nic = 'arin||ipv4|13.0.0.0|16777216|19830823|allocated|99e9610432f009e0e177ba0c274bb288\n'
         asn = 'arin|US|asn|14.0.0.0|16777216|19830823|allocated|99e9610432f009e0e177ba0c274bb288\n'
-        for entry in [ip4, ip6, nc, asn]:
+        for entry in [ip4, ip6, nic, asn]:
             callback(entry.encode('ASCII'))
 
     def retrlines(self, command, callback):
