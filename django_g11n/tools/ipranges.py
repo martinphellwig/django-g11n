@@ -82,9 +82,6 @@ def download(url):
     ftp.cwd(file_path)
 
     details = _file_details(ftp, file_name)
-    if details is None:
-        print('# No updated files found !')
-        return
 
     file_cache = '_'.join([details['name_local'],
                            details['size'],

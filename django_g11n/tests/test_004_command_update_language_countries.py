@@ -56,6 +56,19 @@ class UpdateLanguagesTestCase(TestCase):
         model.save()
         self.call_command('update_language_countries')
 
+    def test_003_tool_country_addition(self):
+        from ..tools import language
+        addition = [1,2,3,4,5,6]
+        language.ADDITIONS.append(addition)
+        is_added = False
+        for entry in language.get():
+            if entry == addition:
+                is_added = True
+                break
+
+        self.assertTrue(is_added)
+        
+
 
 if __name__ == '__main__': # pragma: no cover
     # pylint: disable=wrong-import-position

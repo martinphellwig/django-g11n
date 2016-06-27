@@ -20,7 +20,7 @@ def ipaddress(request=None):
     if key in os.environ:
         override = os.environ[key]
 
-    if override is None and request is None:
+    if (override is None or override.strip() == '') and request is None:
         text = "Environment variable %s must be set to an appropriate IP."
         raise ValueError(text)
 

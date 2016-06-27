@@ -108,3 +108,56 @@ def setup_currencies():
     mock.remove_mock()
     call_command('update_currencies')
 
+
+_STATE = {'mlsd':False}
+
+class MockFTP():
+    def __init__(self, host):
+        self._host = host
+        self._path = None
+        self._mlsd_called = False
+
+        tmp = {'size':'91',
+               'modify':'x_remove_x'}
+        self._files =[
+            ['delegated-arin-extended-latest', tmp],
+            ['delegated-ripencc-extended-latest', tmp],
+            ['delegated-afrinic-extended-latest', tmp],
+            ['delegated-apnic-extended-latest', tmp],
+            ['delegated-lacnic-extended-latest', tmp],]
+
+    def login(self):
+        pass
+
+    def cwd(self, path):
+        self._path = path
+
+    def mlsd(self):
+        if _STATE['mlsd']:
+            _STATE['mlsd'] = False
+            raise ValueError()
+        else:
+            _STATE['mlsd'] = True
+
+        return self._files
+
+    def retrbinary(self, retr, callback):
+        ip4 = 'arin|US|ipv4|12.0.0.0|16777216|19830823|allocated|99e9610432f009e0e177ba0c274bb288\n'
+        ip6 = 'arin|US|ipv6|2001:418::|32|20000524|allocated|9f14454567a6c23e60bfd4fec24d1438\n'
+        nc = 'arin||ipv4|13.0.0.0|16777216|19830823|allocated|99e9610432f009e0e177ba0c274bb288\n'
+        asn = 'arin|US|asn|14.0.0.0|16777216|19830823|allocated|99e9610432f009e0e177ba0c274bb288\n'
+        for entry in [ip4, ip6, nc, asn]:
+            callback(entry.encode('ASCII'))
+
+    def retrlines(self, command, callback):
+        if not 'second' in command:
+            callback('-> second')
+        else:
+            callback('one two three four five six seven eight')
+
+
+
+class FTPMock(object):
+    FTP = MockFTP
+    error_perm = ValueError
+

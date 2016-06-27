@@ -44,7 +44,7 @@ class VariousTestCase(TestCase):
         _.id = None
         _.save()
         self.assertRaises(ValueError, fetch.country_by_ip, '3.0.0.1')
-
+        
 
 
 if __name__ == '__main__': # pragma: no cover
