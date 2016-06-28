@@ -121,7 +121,7 @@ class MockFTP():
 
         tmp = {'size':'91',
                'modify':'x_remove_x'}
-        self._files =[
+        self._files = [
             ['delegated-arin-extended-latest', tmp],
             ['delegated-ripencc-extended-latest', tmp],
             ['delegated-afrinic-extended-latest', tmp],
@@ -162,4 +162,5 @@ class MockFTP():
 class FTPMock(object):
     FTP = MockFTP
     error_perm = ValueError
+
 
