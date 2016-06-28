@@ -37,7 +37,7 @@ class Abstract(models.Model):
 
 class Language(Abstract):
     "Stores Languages."
-    bibliographic = models.CharField(max_length=3, null=True, blank=True)
+    bibliographic = models.CharField(max_length=7, null=True, blank=True)
     terminologic = models.CharField(max_length=3, null=True, blank=True)
     code_a2 = models.CharField(max_length=2, null=True, blank=True)
     english = models.TextField()
