@@ -35,8 +35,8 @@ How do I install it?
 
   $ pip install django-g11n
 
-Use .. _django-integrator: https://bitbucket.org/hellwig/django-integrator 
-to integrate this app to your django instance, alternatively you can do it the
+Use `django-integrator <https://bitbucket.org/hellwig/django-integrator>`_  to
+integrate this app to your django instance, alternatively you can do it the
 common manual way.
 
 
