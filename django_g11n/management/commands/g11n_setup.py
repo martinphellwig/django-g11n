@@ -2,7 +2,7 @@
 
 from django.core.management.base import BaseCommand
 from . import (update_countries, update_currencies, update_ipranges,
-               update_languages, update_language_countries)
+               update_languages, update_language_countries, update_regions)
 # pylint: disable=no-member
 
 class Command(BaseCommand):
@@ -18,3 +18,4 @@ class Command(BaseCommand):
         update_ipranges.update()
         update_languages.update()
         update_language_countries.update()
+        update_regions.update()

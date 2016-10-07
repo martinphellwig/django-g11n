@@ -166,3 +166,31 @@ class IPRange(Abstract):
         return self.identifier
 
 
+class Region(Abstract):
+    "These are the Country/Region names as defined by UN Statistics division."
+    numeric = models.CharField(max_length=3, unique=True)
+    english = models.CharField(max_length=64)
+    obsolete = models.BooleanField(default=False)
+    reference = models.ForeignKey(Country, null=True, blank=True)
+
+    def __str__(self):
+        return self.numeric + ' ' + self.english
+
+    def save(self, *args, **kwargs):
+        self.numeric = str(int(self.numeric)).zfill(3)
+        return Abstract.save(self, *args, **kwargs)
+
+
+class RegionChain(Abstract):
+    "This table contains the hierarchical structure of the regions."
+    # As some countries can be in multiple regions, we use this method instead
+    # of defining a parent region in the Region model itself pointing to itself.
+    # Alternatively I could have made that work using ManyToMany, but did not go
+    # down that road as I wanted to keep it simpler.
+    upper = models.ForeignKey(Region, related_name='upper')
+    lower = models.ForeignKey(Region, related_name='lower')
+
+    class Meta:
+        "Meta options"
+        unique_together = (('upper', 'lower'))
+    

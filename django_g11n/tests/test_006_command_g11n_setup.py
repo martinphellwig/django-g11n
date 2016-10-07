@@ -26,7 +26,7 @@ class UpdateLanguageCountriesTestCase(TestCase):
         self.g11n_setup = g11n_setup
         self.update_modules = ['update_countries', 'update_currencies',
                                'update_ipranges', 'update_languages',
-                               'update_language_countries']
+                               'update_language_countries', 'update_regions']
         for name in self.update_modules:
             module = getattr(g11n_setup, name)
             mock = MockUpdate(module)
