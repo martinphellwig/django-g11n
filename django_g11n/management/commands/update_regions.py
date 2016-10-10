@@ -10,16 +10,15 @@ from ...tools import models, region
 def update_regions(numeric_names):
     "Update regions"
     model = models.ALL['Region']
-    index_old = set(model.objects.all().values_list('numeric', flat=True))
-
-    index_old = set(model.objects.all().values_list('numeric', flat=True))
+    m49_query = model.objects.filter(unsd_m49=True)
+    index_old = set(m49_query.values_list('numeric', flat=True))
     index_new = set(numeric_names.keys())
 
     print('# Region entries; %s in db vs %s in source.' % (len(index_old),
                                                             len(index_new)))
 
     db_obsolete = index_old.difference(index_new)
-    model.objects.filter(numeric__in=db_obsolete).update(obsolete=True)
+    m49_query.filter(numeric__in=db_obsolete).update(obsolete=True)
     print('# %s DB Regions entries marked obsolete.' % len(db_obsolete))
 
     db_insert = index_new.difference(index_old)
@@ -29,6 +28,7 @@ def update_regions(numeric_names):
             instance = model()
             instance.numeric = entry[0]
             instance.english = entry[1]
+            instance.unsd_m49 = True
             tmp.append(instance)
 
     model.objects.bulk_create(tmp)
@@ -37,7 +37,7 @@ def update_regions(numeric_names):
     db_update = index_new.intersection(index_old)
     update_count = 0
     by_numeric = dict()
-    for instance in model.objects.filter(numeric__in=db_update):
+    for instance in m49_query.filter(numeric__in=db_update):
         by_numeric[instance.numeric] = instance
         if instance.english != numeric_names[instance.numeric]:
             instance.english = numeric_names[instance.numeric]
