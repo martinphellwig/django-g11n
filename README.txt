@@ -196,6 +196,14 @@ interactive shell session like so:
   
   In [18]: 
 
+As you can see above that most models refer back to the Country model via
+the 'reference' field, this is done because most tables are filled from outside
+source. For country, language and currencies we use ISO, for regions we use
+UN-SD M49 and the ipranges are downloaded from the regional NIC's.
+Since all of them have slightly different representation of the country names,
+the country names in each table has been preserved on import and after import
+the system tries to find the appropriate foreign relationship to the Country
+table.
 
 What license is this?
 =====================
