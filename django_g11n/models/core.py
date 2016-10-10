@@ -188,8 +188,8 @@ class RegionChain(Abstract):
     # of defining a parent region in the Region model itself pointing to itself.
     # Alternatively I could have made that work using ManyToMany, but did not go
     # down that road as I wanted to keep it simpler.
-    upper = models.ForeignKey(Region, related_name='upper')
-    lower = models.ForeignKey(Region, related_name='lower')
+    upper = models.ForeignKey(Region, related_name='chains_region_is_upper')
+    lower = models.ForeignKey(Region, related_name='chains_region_is_lower')
 
     class Meta:
         "Meta options"
