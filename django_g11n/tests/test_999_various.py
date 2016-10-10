@@ -38,13 +38,13 @@ class VariousTestCase(TestCase):
 
     def test_002_tools_fetch(self):
         from ..tools import fetch
-        self.assertEqual(fetch.country_by_ip('0.0.0.0'), None)
+        self.assertEqual(fetch.iprange_by_ip('0.0.0.0'), None)
         from ..tools import models
         _ = models.ALL['IPRange'].objects.get(id=1)
         _.id = None
         _.save()
         self.assertRaises(ValueError, fetch.country_by_ip, '3.0.0.1')
-        
+
 
 
 if __name__ == '__main__': # pragma: no cover

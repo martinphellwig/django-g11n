@@ -4,8 +4,8 @@ Fetch data.
 import ipaddress
 from . import models
 
-def country_by_ip(ip_address):
-    "Return the TLD assigned to the address block the IP address is part of."
+def iprange_by_ip(ip_address):
+    "Return iprange object this ip is part of,"
     address = ipaddress.ip_address(ip_address)
     hex_address = hex(int(address))[2::].zfill(32)
 
@@ -21,7 +21,12 @@ def country_by_ip(ip_address):
         text = '! IPCountry table inconsistent on address %s' % ip_address
         raise ValueError(text)
     else:
-        return value[0].tld
+        return value[0]
+
+def country_by_ip(ip_address):
+    "Return the TLD assigned to the address block the IP address is part of."
+    if iprange_by_ip(ip_address):
+        return iprange_by_ip(ip_address).tld
 
 
 def currency_by_country_tld(tld):
