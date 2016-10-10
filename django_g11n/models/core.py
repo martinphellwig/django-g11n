@@ -172,6 +172,7 @@ class Region(Abstract):
     english = models.CharField(max_length=64)
     obsolete = models.BooleanField(default=False)
     reference = models.ForeignKey(Country, null=True, blank=True)
+    unsd_m49 = models.BooleanField(default=False)
 
     def __str__(self):
         return self.numeric + ' ' + self.english
